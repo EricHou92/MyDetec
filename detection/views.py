@@ -32,7 +32,7 @@ def UploadAPK(request):
     }
     if request.method == 'POST':
         file_obj = request.FILES.get('apk', None)
-        if file_obj != None:
+        if file_obj is not None:
             savePath = os.path.join(settings.MEDIA_ROOT, 'upload/' + datetime.now().strftime('%Y%m%d%H%M%S') + str(
                 random.randint(0, 100000)) + '.apk')
             apkFile = open(savePath, 'wb+')

@@ -1,4 +1,6 @@
 # coding: utf-8
+import random
+
 __author__ = 'ciciya'
 
 from django.core.management.base import BaseCommand
@@ -26,7 +28,15 @@ class Command(BaseCommand):
 
     def handle(self, *arg, **options):
         self.loadDatas()
-
+        index = [i for i in range(len(self.FEATURE_DATA))]
+        random.shuffle(index)
+        self.FEATURE_DATA = self.FEATURE_DATA[index]
+        self.LABELS = self.LABELS[index]
+        print(self.FEATURE_DATA.shape)
+        print(self.LABELS.shape)
+        # self.FEATURE_DATA = np.random.randint(0, 2, size=[13053, 314])
+        # self.LABELS = np.random.randint(0, 2, size=[13053, 1])
+        # 特征取30,31,32差别特别大
         train_data, test_data, train_labels, test_labels = train_test_split(self.FEATURE_DATA, self.LABELS,
                                                                             test_size=0.2)
 
@@ -42,10 +52,12 @@ class Command(BaseCommand):
         print('all models saved')
 
     def KNNModel(self, train_data, test_data, train_labels, test_labels):
-        model = KNeighborsClassifier(algorithm='auto')
+        model = KNeighborsClassifier()
         model.fit(train_data, train_labels)
         self.saveModel(model, 'KNN')
         predict = model.predict(test_data)
+        print(test_labels)
+        print(predict)
         return metrics.accuracy_score(test_labels, predict)
 
     def NBModel(self, train_data, test_data, train_labels, test_labels):
@@ -53,6 +65,7 @@ class Command(BaseCommand):
         model.fit(train_data, train_labels)
         self.saveModel(model, 'NB')
         predict = model.predict(test_data)
+        print(predict)
         return metrics.accuracy_score(test_labels, predict)
 
     def LRModel(self, train_data, test_data, train_labels, test_labels):
@@ -60,6 +73,7 @@ class Command(BaseCommand):
         model.fit(train_data, train_labels)
         self.saveModel(model, 'LR')
         predict = model.predict(test_data)
+        print(predict)
         return metrics.accuracy_score(test_labels, predict)
 
     def RFModel(self, train_data, test_data, train_labels, test_labels):
@@ -67,6 +81,7 @@ class Command(BaseCommand):
         model.fit(train_data, train_labels)
         self.saveModel(model, 'RF')
         predict = model.predict(test_data)
+        print(predict)
         return metrics.accuracy_score(test_labels, predict)
 
     def SVMModel(self, train_data, test_data, train_labels, test_labels):
@@ -74,6 +89,7 @@ class Command(BaseCommand):
         model.fit(train_data, train_labels)
         self.saveModel(model, 'SVM')
         predict = model.predict(test_data)
+        print(predict)
         return metrics.accuracy_score(test_labels, predict)
 
     def saveModel(self, model, name):
@@ -82,6 +98,7 @@ class Command(BaseCommand):
 
     def loadDatas(self):
         all_field_names = self.getFieldNames()
+        # print(all_field_names[32])
         apkinfos = ApkPermission.objects.all()
         datas = []
         labels = []

@@ -74,6 +74,7 @@ def DSVM(datas):
 def DP(apk):
     all_permissions = get_permissions()
     args = {}
+    # package = apk.filename
     package = apk.get_package()
     args['package'] = package
     permissions = apk.get_permissions()
